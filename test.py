@@ -9,7 +9,7 @@ from fastauc.auroc import AUROC
 def main():
     n = 1000000
     m = 100000
-    repeat = 100
+    repeat = 10
 
     skl_t_list, fac_t_list, diff_list = [], [], []
 
