@@ -22,6 +22,15 @@ class section:
         return wrapped_func
 
 
+def runtime_summary(skl_t_list, fac_t_list, diff_list):
+    print("\nFinal evaluation")
+    print(f"Run time statistics for Scikit-learn: "
+          f"avg = {np.mean(skl_t_list):.2e}, std = {np.std(skl_t_list):.2e}")
+    print(f"Run time statistics for FastAUC     : "
+          f"avg = {np.mean(fac_t_list):.2e}, std = {np.std(fac_t_list):.2e}")
+    print(f"Diff: avg={np.mean(diff_list):.2e}, std={np.std(diff_list):.2e}")
+
+
 @section("binray")
 def test_runtime_binary(num_samples, num_pos, repeat):
     skl_t_list, fac_t_list, diff_list = [], [], []
@@ -43,12 +52,7 @@ def test_runtime_binary(num_samples, num_pos, repeat):
 
         print(f"Scikit-learn: {skl_auroc:06.4f}, FastAUR: {fac_auroc:06.4f}")
 
-    print("\nFinal evaluation")
-    print(f"Run time statistics for Scikit-learn: "
-          f"avg = {np.mean(skl_t_list):.2e}, std = {np.std(skl_t_list):.2e}")
-    print(f"Run time statistics for FastAUC     : "
-          f"avg = {np.mean(fac_t_list):.2e}, std = {np.std(fac_t_list):.2e}")
-    print(f"Diff: avg={np.mean(diff_list):.2e}, std={np.std(diff_list):.2e}")
+    runtime_summary(skl_t_list, fac_t_list, diff_list)
 
 
 @section("multi")
@@ -80,12 +84,7 @@ def test_runtime_multi(num_classes, num_samples, num_pos, repeat):
 
         print(f"Scikit-learn: {skl_auroc:06.4f}, FastAUR: {fac_auroc:06.4f}")
 
-    print("\nFinal evaluation")
-    print(f"Run time statistics for Scikit-learn: "
-          f"avg = {np.mean(skl_t_list):.2e}, std = {np.std(skl_t_list):.2e}")
-    print(f"Run time statistics for FastAUC     : "
-          f"avg = {np.mean(fac_t_list):.2e}, std = {np.std(fac_t_list):.2e}")
-    print(f"Diff: avg={np.mean(diff_list):.2e}, std={np.std(diff_list):.2e}")
+    runtime_summary(skl_t_list, fac_t_list, diff_list)
 
 
 def test_min_num_pos():
@@ -101,7 +100,7 @@ def test_min_num_pos():
 
 def main():
     test_runtime_binary(1_000_000, 100_000, 10)
-    test_runtime_multi(20, 1_000_000, 100_000, 10)
+    test_runtime_multi(10, 100_000, 10_000, 10)
     test_min_num_pos()
 
 
