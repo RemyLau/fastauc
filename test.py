@@ -6,6 +6,23 @@ from sklearn.metrics import roc_auc_score
 from fastauc.auroc import AUROC
 
 
+class section:
+
+    def __init__(self, name):
+        self.name = name
+
+    def __call__(self, func):
+
+        def wrapped_func(*args, **kwargs):
+            bar = '=' * 20
+            print(f"{bar}Start testing {self.name}{bar}")
+            func(*args, **kwargs)
+            print(f"{bar}Done testing {self.name}{bar}")
+
+        return wrapped_func
+
+
+@section("binray")
 def test_runtime_binary(num_samples, num_pos, repeat):
     skl_t_list, fac_t_list, diff_list = [], [], []
 
@@ -34,6 +51,43 @@ def test_runtime_binary(num_samples, num_pos, repeat):
     print(f"Diff: avg={np.mean(diff_list):.2e}, std={np.std(diff_list):.2e}")
 
 
+@section("multi")
+def test_runtime_multi(num_classes, num_samples, num_pos, repeat):
+    skl_t_list, fac_t_list, diff_list = [], [], []
+
+    for i in range(repeat):
+        y_pred = np.zeros((num_samples, num_classes))
+        y_true = np.zeros((num_samples, num_classes), dtype=bool)
+
+        for j in range(num_classes):
+            y_pred[:, j] = np.sort(np.random.random(num_samples))[::-1]
+            y_true[:, j] = np.random.random(num_samples) > np.random.random()
+            y_true[:num_pos, j] = True
+
+        t = time.perf_counter()
+        skl_aurocs = [
+            roc_auc_score(y_true[:, i], y_pred[:, i])
+            for i in range(num_classes)
+        ]
+        skl_auroc = np.mean(skl_aurocs)
+        skl_t_list.append(time.perf_counter() - t)
+
+        t = time.perf_counter()
+        fac_auroc = np.mean(AUROC()(y_true, y_pred))
+        fac_t_list.append(time.perf_counter() - t)
+
+        diff_list.append(np.abs(skl_auroc - fac_auroc))
+
+        print(f"Scikit-learn: {skl_auroc:06.4f}, FastAUR: {fac_auroc:06.4f}")
+
+    print("\nFinal evaluation")
+    print(f"Run time statistics for Scikit-learn: "
+          f"avg = {np.mean(skl_t_list):.2e}, std = {np.std(skl_t_list):.2e}")
+    print(f"Run time statistics for FastAUC     : "
+          f"avg = {np.mean(fac_t_list):.2e}, std = {np.std(fac_t_list):.2e}")
+    print(f"Diff: avg={np.mean(diff_list):.2e}, std={np.std(diff_list):.2e}")
+
+
 def test_min_num_pos():
     num_samples = 100
 
@@ -46,8 +100,8 @@ def test_min_num_pos():
 
 
 def main():
-    test_runtime_binary(num_samples=1_000_000, num_pos=100_000, repeat=10)
-    test_runtime_multi(num_samples=1_000_000, num_pos=100_000, repeat=10)
+    test_runtime_binary(1_000_000, 100_000, 10)
+    test_runtime_multi(20, 1_000_000, 100_000, 10)
     test_min_num_pos()
 
 
