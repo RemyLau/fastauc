@@ -24,7 +24,7 @@ def test_runtime(ary_size, num_pos, repeat):
 
         diff_list.append(np.abs(skl_auroc - fac_auroc))
 
-        print(f"Scikit-learn: {skl_auroc:07.4f}, FastAUR: {fac_auroc:07.4f}")
+        print(f"Scikit-learn: {skl_auroc:06.4f}, FastAUR: {fac_auroc:06.4f}")
 
     print("\nFinal evaluation")
     print(f"Run time statistics for Scikit-learn: "
