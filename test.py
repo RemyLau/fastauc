@@ -34,8 +34,20 @@ def test_runtime(ary_size, num_pos, repeat):
     print(f"Diff: avg={np.mean(diff_list):.2e}, std={np.std(diff_list):.2e}")
 
 
+def test_min_num_pos():
+    ary_size = 100
+
+    y_pred = np.random.random(ary_size)
+    y_true = np.zeros(ary_size, dtype=bool)
+    y_true[:5] = True
+
+    assert not np.isnan(AUROC()(y_true, y_pred))
+    assert np.isnan(AUROC(min_num_pos=10)(y_true, y_pred))
+
+
 def main():
     test_runtime(ary_size=1_000_000, num_pos=100_000, repeat=10)
+    test_min_num_pos()
 
 
 if __name__ == '__main__':
