@@ -6,12 +6,12 @@ from sklearn.metrics import roc_auc_score
 from fastauc.auroc import AUROC
 
 
-def test_runtime(ary_size, num_pos, repeat):
+def test_runtime_binary(num_samples, num_pos, repeat):
     skl_t_list, fac_t_list, diff_list = [], [], []
 
     for i in range(repeat):
-        y_pred = np.sort(np.random.random(ary_size))[::-1]
-        y_true = np.random.random(ary_size) > np.random.random()
+        y_pred = np.sort(np.random.random(num_samples))[::-1]
+        y_true = np.random.random(num_samples) > np.random.random()
         y_true[:num_pos] = True
 
         t = time.perf_counter()
@@ -35,10 +35,10 @@ def test_runtime(ary_size, num_pos, repeat):
 
 
 def test_min_num_pos():
-    ary_size = 100
+    num_samples = 100
 
-    y_pred = np.random.random(ary_size)
-    y_true = np.zeros(ary_size, dtype=bool)
+    y_pred = np.random.random(num_samples)
+    y_true = np.zeros(num_samples, dtype=bool)
     y_true[:5] = True
 
     assert not np.isnan(AUROC()(y_true, y_pred))
@@ -46,7 +46,8 @@ def test_min_num_pos():
 
 
 def main():
-    test_runtime(ary_size=1_000_000, num_pos=100_000, repeat=10)
+    test_runtime_binary(num_samples=1_000_000, num_pos=100_000, repeat=10)
+    test_runtime_multi(num_samples=1_000_000, num_pos=100_000, repeat=10)
     test_min_num_pos()
 
 
