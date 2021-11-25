@@ -5,6 +5,8 @@ from sklearn.metrics import roc_auc_score
 
 from fastauc.auroc import AUROC
 
+TOL = 1e-12  # error tolerance between the computed auroc scores
+
 
 class section:
 
@@ -31,6 +33,7 @@ def runtime_summary(skl_t_list, fac_t_list, diff_list):
         f"avg = {np.mean(fac_t_list):.2e}, std = {np.std(fac_t_list):.2e}\n"
         f"Diff: avg={np.mean(diff_list):.2e}, std={np.std(diff_list):.2e}"
     )
+    assert np.mean(diff_list) < TOL
 
 
 @section("binray")
