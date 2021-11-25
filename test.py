@@ -1,4 +1,4 @@
-from time import time
+import time
 
 import numpy as np
 from sklearn.metrics import roc_auc_score
@@ -18,13 +18,13 @@ def main():
         y_true = np.random.random(n) > np.random.random()
         y_true[:m] = True
 
-        t = time()
+        t = time.perf_counter()
         skl_auroc = roc_auc_score(y_true, y_pred)
-        skl_t_list.append(time() - t)
+        skl_t_list.append(time.perf_counter() - t)
 
-        t = time()
+        t = time.perf_counter()
         fac_auroc = AUROC()(y_true, y_pred)
-        fac_t_list.append(time() - t)
+        fac_t_list.append(time.perf_counter() - t)
 
         diff_list.append(np.abs(skl_auroc - fac_auroc))
 
