@@ -23,12 +23,14 @@ class section:
 
 
 def runtime_summary(skl_t_list, fac_t_list, diff_list):
-    print("\nFinal evaluation")
-    print(f"Run time statistics for Scikit-learn: "
-          f"avg = {np.mean(skl_t_list):.2e}, std = {np.std(skl_t_list):.2e}")
-    print(f"Run time statistics for FastAUC     : "
-          f"avg = {np.mean(fac_t_list):.2e}, std = {np.std(fac_t_list):.2e}")
-    print(f"Diff: avg={np.mean(diff_list):.2e}, std={np.std(diff_list):.2e}")
+    print(
+        f"\nSummary stats\n"
+        f"Scikit-learn: "
+        f"avg = {np.mean(skl_t_list):.2e}, std = {np.std(skl_t_list):.2e}\n"
+        f"FastAUC     : "
+        f"avg = {np.mean(fac_t_list):.2e}, std = {np.std(fac_t_list):.2e}\n"
+        f"Diff: avg={np.mean(diff_list):.2e}, std={np.std(diff_list):.2e}"
+    )
 
 
 @section("binray")
