@@ -3,25 +3,21 @@ from numba import njit, prange
 
 
 class AUROC:
-    def __init__(self, n_classes=2, min_num_pos=1):
-        pass
+    def __init__(self, min_num_pos=1):
+        self.min_num_pos = min_num_pos
 
     def __call__(self, y_true, y_pred):
-        return _binary_auroc_score(y_true, y_pred)
-
-    @property
-    def n_classes(self, n):
-        pass
+        return _binary_auroc_score(y_true, y_pred, self.min_num_pos)
 
 
 @njit(nogil=True, cache=True)
-def _binary_auroc_score(y_true, y_pred):
+def _binary_auroc_score(y_true, y_pred, min_num_pos):
     n = y_true.shape[0]
     y_true_sorted = y_true[y_pred.argsort()[::-1]] == 1
     n_pos = y_true_sorted.sum()
     n_neg = n - n_pos
 
-    if n_pos < 1:
+    if n_pos < min_num_pos:
         return np.nan
 
     n_tp = n_fp = tpr = fpr = 0
